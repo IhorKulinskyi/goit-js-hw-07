@@ -7,17 +7,23 @@ galleryList.innerHTML = makeGalleryItemsMarkup(galleryItems);
 
 galleryList.addEventListener("click", openModalWindow);
 
-
 function openModalWindow(event) {
   event.preventDefault();
+
   if (event.target.classList.value !== "gallery__image") {
     return;
   }
-  const instance = basicLightbox.create(`
-    <img src="${event.target.dataset.source}" width="800" height="600">
-`);
+  const instance = basicLightbox.create(
+    `<img src="${event.target.dataset.source}" width="800" height="600">`
+  );
 
-  instance.show();
+  instance.show(() => window.addEventListener("keydown", onEscPress));
+
+  function onEscPress(event) {
+    if (event.code === "Escape") {
+      instance.close(() => window.removeEventListener("keydown", onEscPress));
+    }
+  }
 }
 
 function makeGalleryItemsMarkup(galleryItems) {
@@ -38,4 +44,3 @@ function makeGalleryItemsMarkup(galleryItems) {
 
   return markup;
 }
-
